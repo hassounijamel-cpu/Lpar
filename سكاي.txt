@@ -1,0 +1,156 @@
+-- LocalScript (ضعه في StarterPlayerScripts أو داخل ScreenGui)
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- ====== إنشاء الواجهة ======
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "NeymarSkyboxGui"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = playerGui
+
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.Size = UDim2.new(0, 360, 0, 180)
+MainFrame.Position = UDim2.new(0.5, -180, 0.4, -90)
+MainFrame.BackgroundColor3 = Color3.fromRGB(8, 20, 45) -- أزرق غامق
+MainFrame.BorderSizePixel = 0
+
+local BgGradient = Instance.new("UIGradient")
+BgGradient.Parent = MainFrame
+BgGradient.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(6, 12, 30)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(8, 20, 45))
+}
+
+local Corner = Instance.new("UICorner")
+Corner.Parent = MainFrame
+Corner.CornerRadius = UDim.new(0, 12)
+
+-- عنوان
+local Title = Instance.new("TextLabel")
+Title.Name = "Title"
+Title.Parent = MainFrame
+Title.Size = UDim2.new(1, -20, 0, 36)
+Title.Position = UDim2.new(0, 10, 0, 10)
+Title.BackgroundTransparency = 1
+Title.Text = "سكربت نيمار(حسنين) سكاي بوكس"
+Title.Font = Enum.Font.ArialBold
+Title.TextSize = 20
+Title.TextColor3 = Color3.fromRGB(230, 230, 230)
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+local Line = Instance.new("Frame")
+Line.Parent = MainFrame
+Line.Size = UDim2.new(1, -20, 0, 2)
+Line.Position = UDim2.new(0, 10, 0, 48)
+Line.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
+Line.BorderSizePixel = 0
+Line.Name = "AccentLine"
+
+local SubText = Instance.new("TextLabel")
+SubText.Parent = MainFrame
+SubText.Size = UDim2.new(1, -20, 0, 20)
+SubText.Position = UDim2.new(0, 10, 0, 54)
+SubText.BackgroundTransparency = 1
+SubText.Text = "اختر سكاي بوكس:"
+SubText.Font = Enum.Font.Arial
+SubText.TextSize = 15
+SubText.TextColor3 = Color3.fromRGB(200,200,200)
+SubText.TextXAlignment = Enum.TextXAlignment.Left
+
+-- ====== أزرار ======
+local ButtonsFrame = Instance.new("Frame")
+ButtonsFrame.Parent = MainFrame
+ButtonsFrame.Size = UDim2.new(1, -20, 0, 80)
+ButtonsFrame.Position = UDim2.new(0, 10, 0, 80)
+ButtonsFrame.BackgroundTransparency = 1
+
+local function createButton(name, text, y)
+	local btn = Instance.new("TextButton")
+	btn.Name = name
+	btn.Parent = ButtonsFrame
+	btn.Size = UDim2.new(1, 0, 0, 34)
+	btn.Position = UDim2.new(0, 0, 0, y)
+	btn.BackgroundColor3 = Color3.fromRGB(12, 28, 60)
+	btn.BorderSizePixel = 0
+	btn.Font = Enum.Font.ArialBold
+	btn.Text = text
+	btn.TextSize = 16
+	btn.TextColor3 = Color3.fromRGB(240,240,240)
+	btn.AutoButtonColor = true
+
+	local bc = Instance.new("UICorner")
+	bc.Parent = btn
+	bc.CornerRadius = UDim.new(0,8)
+
+	return btn
+end
+
+local btnSkyboxBrookhaven = createButton("BtnSkyboxBrookhaven", "سكاي بوكس لماب بروك هافن", 0)
+local btnSkyboxAdmin = createButton("BtnSkyboxAdmin", "سكاي لمابات الأدمن", 44)
+
+-- ====== سلوك الضغط على الأزرار ======
+local function safeRun(func)
+	ScreenGui.Enabled = false
+	local ok, err = pcall(func)
+	if not ok then
+		ScreenGui.Enabled = true
+		warn("خطأ عند تشغيل السكربت:", err)
+	end
+end
+
+-- **هنا: زر الأول ينفّذ السطر الذي طلبته بالضبط**
+btnSkyboxBrookhaven.MouseButton1Click:Connect(function()
+	safeRun(function()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/hassounijamel-cpu/Lpar/refs/heads/main/%D8%B3%D9%83%D8%A7%D9%8A%20%D8%A8%D8%B1%D9%88%D9%83.txt"))()
+	end)
+end)
+
+-- الزر الثاني كما طلبت سابقًا (ينفّذ ملف الأدمن)
+btnSkyboxAdmin.MouseButton1Click:Connect(function()
+	safeRun(function()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/hassounijamel-cpu/Lpar/refs/heads/main/%D8%B3%D9%83%D8%A7%D9%8A%20%D8%A7%D8%AF%D9%85%D9%86.txt"))()
+	end)
+end)
+
+-- ====== سحب الواجهة (Draggable) يدعم ماوس و تاتش ======
+local dragging = false
+local dragInput, dragStart, startPos
+
+MainFrame.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		dragging = true
+		dragStart = input.Position
+		startPos = MainFrame.Position
+
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then
+				dragging = false
+			end
+		end)
+	end
+end)
+
+MainFrame.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+		dragInput = input
+	end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+	if input == dragInput and dragging then
+		local delta = input.Position - dragStart
+		local newPos = UDim2.new(
+			startPos.X.Scale,
+			startPos.X.Offset + delta.X,
+			startPos.Y.Scale,
+			startPos.Y.Offset + delta.Y
+		)
+		MainFrame.Position = newPos
+	end
+end)
+
+-- انتهى
